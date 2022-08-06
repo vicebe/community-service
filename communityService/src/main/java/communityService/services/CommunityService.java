@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CommunityService {
@@ -27,7 +28,7 @@ public class CommunityService {
 
         User user = userRepository.findById(communityDTO.getAdmin_id()).orElse(null);
 
-        if (!(user == null)) {
+        if (user != null) {
             Community community = new Community();
 
             community.setCommunity_name(communityDTO.getCommunity_name());
@@ -76,7 +77,7 @@ public class CommunityService {
 
         Community community = communityRepository.findById(community_id).orElse(null);
 
-        if (!(community == null)) {
+        if (community != null) {
             CommunityDTO communityDTO = new CommunityDTO();
             communityDTO.setCommunity_id(community.getCommunity_id());
             communityDTO.setCommunity_name(community.getCommunity_name());
@@ -90,6 +91,25 @@ public class CommunityService {
             return communityDTO;
         }
         return null;
+    }
+
+    public boolean deleteCommunity(Long community_id, Long admin_id) {
+
+        Community community = communityRepository.findById(community_id).orElse(null);
+
+        if (community != null) {
+            for(Role role: community.getRoles()) {
+                if (role.getRole_name().equals("administrator")) {
+                    for (User user: role.getUsers()) {
+                        if (user.getUser_id().equals(admin_id)) {
+                            communityRepository.delete(community);
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
 }

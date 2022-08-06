@@ -36,5 +36,14 @@ public class CommunityController {
     public ResponseEntity<CommunityDTO> getCommunity(@PathVariable Long community_id) {
         return new ResponseEntity<>(communityService.getCommunity(community_id), HttpStatus.OK);
     }
+
+    @DeleteMapping("/{community_id}/{admin_id}")
+    public ResponseEntity<String> deleteCommunity(@PathVariable Long community_id, @PathVariable Long admin_id) {
+        String res = "Community not deleted";
+        if (communityService.deleteCommunity(community_id, admin_id)) {
+            res = "Community deleted";
+        }
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
 }
 
