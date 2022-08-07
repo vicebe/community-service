@@ -36,5 +36,14 @@ public class CommunityController {
     public ResponseEntity<CommunityDTO> getCommunity(@PathVariable Long community_id) {
         return new ResponseEntity<>(communityService.getCommunity(community_id), HttpStatus.OK);
     }
+
+    @PatchMapping("/{community_id}/{user_id}")
+    public ResponseEntity<String> joinCommunity(@PathVariable Long community_id, @PathVariable Long user_id) {
+        String res = "User not joined to community";
+        if (communityService.joinCommunity(community_id, user_id)) {
+            res = "User joined to community";
+        }
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
 }
 

@@ -39,8 +39,13 @@ public class CommunityService {
             role.setUsers(new ArrayList<>());
             role.getUsers().add(user);
 
+            Role role2 = new Role();
+            role2.setRole_name("users");
+            role2.setUsers(new ArrayList<>());
+
             community.setRoles(new ArrayList<>());
             community.getRoles().add(role);
+            community.getRoles().add(role2);
 
             communityRepository.save(community);
 
@@ -76,7 +81,7 @@ public class CommunityService {
 
         Community community = communityRepository.findById(community_id).orElse(null);
 
-        if (!(community == null)) {
+        if (community != null) {
             CommunityDTO communityDTO = new CommunityDTO();
             communityDTO.setCommunity_id(community.getCommunity_id());
             communityDTO.setCommunity_name(community.getCommunity_name());
@@ -90,6 +95,27 @@ public class CommunityService {
             return communityDTO;
         }
         return null;
+    }
+
+    public boolean joinCommunity(Long community_id, Long user_id) {
+        Community community = communityRepository.findById(community_id).orElse(null);
+        User user = userRepository.findById(user_id).orElse(null);
+        boolean res = false;
+
+        if (community != null && user != null) {
+            if (community.getUsers().stream().noneMatch(u -> u.getUser_id().equals(user_id))) {
+                community.getUsers().add(user);
+                for (Role role: community.getRoles()) {
+                    System.out.println(role.getRole_name());
+                    if (role.getRole_name().equals("users")) {
+                        role.getUsers().add(user);
+                        communityRepository.save(community);
+                        res = true;
+                    }
+                }
+            }
+        }
+        return res;
     }
 
 }
