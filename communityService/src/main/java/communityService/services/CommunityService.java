@@ -3,6 +3,7 @@ package communityService.services;
 import communityService.dtos.CommunityDTO;
 import communityService.dtos.CreateCommunityDTO;
 import communityService.dtos.RoleDTO;
+import communityService.dtos.UserDTO;
 import communityService.models.Community;
 import communityService.models.Role;
 import communityService.models.User;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CommunityService {
@@ -27,7 +29,7 @@ public class CommunityService {
 
         User user = userRepository.findById(communityDTO.getAdmin_id()).orElse(null);
 
-        if (!(user == null)) {
+        if (user != null) {
             Community community = new Community();
 
             community.setCommunity_name(communityDTO.getCommunity_name());
@@ -64,11 +66,21 @@ public class CommunityService {
             CommunityDTO communityDTO = new CommunityDTO();
             communityDTO.setCommunity_id(community.getCommunity_id());
             communityDTO.setCommunity_name(community.getCommunity_name());
-            communityDTO.setUsers(community.getUsers());
+
+            List<UserDTO> userDTOList = new ArrayList<>();
+            community.getUsers().forEach(u -> userDTOList.add(new UserDTO(u.getUser_id())));
+            communityDTO.setUsers(userDTOList);
 
             List<RoleDTO> roleDTOList = new ArrayList<>();
-            community.getRoles().forEach(r -> roleDTOList.add(new RoleDTO(r.getRole_id(), r.getRole_name(),
-                    r.getUsers())));
+
+            for (Role role : community.getRoles()) {
+                List<UserDTO> userDTOList2 = new ArrayList<>();
+
+                role.getUsers().forEach(u -> userDTOList2.add(new UserDTO(u.getUser_id())));
+
+                RoleDTO roleDTO = new RoleDTO(role.getRole_id(), role.getRole_name(), userDTOList2);
+                roleDTOList.add(roleDTO);
+            }
             communityDTO.setRoles(roleDTOList);
 
             communityDTOS.add(communityDTO);
@@ -85,11 +97,20 @@ public class CommunityService {
             CommunityDTO communityDTO = new CommunityDTO();
             communityDTO.setCommunity_id(community.getCommunity_id());
             communityDTO.setCommunity_name(community.getCommunity_name());
-            communityDTO.setUsers(community.getUsers());
+
+            List<UserDTO> userDTOList = new ArrayList<>();
+            community.getUsers().forEach(u -> userDTOList.add(new UserDTO(u.getUser_id())));
+            communityDTO.setUsers(userDTOList);
 
             List<RoleDTO> roleDTOList = new ArrayList<>();
-            community.getRoles().forEach(r -> roleDTOList.add(new RoleDTO(r.getRole_id(), r.getRole_name(),
-                    r.getUsers())));
+            for (Role role : community.getRoles()) {
+                List<UserDTO> userDTOList2 = new ArrayList<>();
+
+                role.getUsers().forEach(u -> userDTOList2.add(new UserDTO(u.getUser_id())));
+
+                RoleDTO roleDTO = new RoleDTO(role.getRole_id(), role.getRole_name(), userDTOList2);
+                roleDTOList.add(roleDTO);
+            }
             communityDTO.setRoles(roleDTOList);
 
             return communityDTO;
@@ -145,13 +166,32 @@ public class CommunityService {
         boolean res = false;
 
         if (community != null && user != null) {
-            for (Role role: community.getRoles()) {
+            for (Role role : community.getRoles()) {
                 if (role.getRole_name().equals("administrator")) {
-                    if(role.getUsers().stream().anyMatch(u -> u.getUser_id().equals(user.getUser_id()))) {
+                    if (role.getUsers().stream().anyMatch(u -> u.getUser_id().equals(user.getUser_id()))) {
                         community.setCommunity_name(community_newName);
                         communityRepository.save(community);
                         res = true;
                         break;
+                    }
+                }
+            }
+        }
+        return res;
+    }
+
+    public boolean deleteCommunity(Long community_id, Long admin_id) {
+
+        Community community = communityRepository.findById(community_id).orElse(null);
+
+        boolean res = false;
+
+        if (community != null) {
+            for(Role role: community.getRoles()) {
+                if (role.getRole_name().equals("administrator")) {
+                    if (role.getUsers().stream().anyMatch(user -> user.getUser_id().equals(admin_id))) {
+                        communityRepository.delete(community);
+                        res = true;
                     }
                 }
             }

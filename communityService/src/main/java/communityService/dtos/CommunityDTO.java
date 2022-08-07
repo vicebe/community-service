@@ -1,6 +1,5 @@
 package communityService.dtos;
 
-import communityService.models.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +13,7 @@ public class CommunityDTO {
 
     private Long community_id;
     private String community_name;
-    List<User> users;
+    List<UserDTO> users;
     List<RoleDTO> roles;
 
 }

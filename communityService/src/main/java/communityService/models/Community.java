@@ -24,6 +24,10 @@ public class Community {
     private String community_name;
 
     @ManyToMany()
+    @JoinTable(
+            joinColumns = {@JoinColumn(name = "community_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
+    )
     private List<User> users;
 
     @ManyToMany(cascade = CascadeType.ALL)

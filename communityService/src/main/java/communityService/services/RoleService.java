@@ -1,7 +1,9 @@
 package communityService.services;
 
 import communityService.dtos.RoleDTO;
+import communityService.dtos.UserDTO;
 import communityService.models.Role;
+import communityService.models.User;
 import communityService.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,11 @@ public class RoleService {
         List<RoleDTO> roleDTOList = new ArrayList<>();
 
         for (Role role: roles) {
-            RoleDTO roleDTO = new RoleDTO(role.getRole_id(), role.getRole_name(), role.getUsers());
+
+            List<UserDTO> userDTOList = new ArrayList<>();
+            role.getUsers().forEach(u -> userDTOList.add(new UserDTO(u.getUser_id())));
+
+            RoleDTO roleDTO = new RoleDTO(role.getRole_id(), role.getRole_name(), userDTOList);
             roleDTOList.add(roleDTO);
         }
 
@@ -34,7 +40,9 @@ public class RoleService {
         RoleDTO roleDTO = null;
 
         if (!(role == null)) {
-            roleDTO = new RoleDTO(role.getRole_id(), role.getRole_name(), role.getUsers());
+            List<UserDTO> userDTOList = new ArrayList<>();
+            role.getUsers().forEach(u -> userDTOList.add(new UserDTO(u.getUser_id())));
+            roleDTO = new RoleDTO(role.getRole_id(), role.getRole_name(), userDTOList);
         }
 
         return roleDTO;
