@@ -20,11 +20,8 @@ public class CommunityController {
 
     @PostMapping("/")
     public ResponseEntity<String> createCommunity(@RequestBody CreateCommunityDTO communityDTO) {
-        String res = "Community not created";
-        if (communityService.createCommunity(communityDTO)) {
-            res = "Community created";
-        }
-        return new ResponseEntity<>(res, HttpStatus.CREATED);
+        communityService.createCommunity(communityDTO);
+        return new ResponseEntity<>("Community created", HttpStatus.CREATED);
     }
 
     @GetMapping("/")
@@ -39,39 +36,27 @@ public class CommunityController {
 
     @PatchMapping("/join/{community_id}/{user_id}")
     public ResponseEntity<String> joinCommunity(@PathVariable Long community_id, @PathVariable Long user_id) {
-        String res = "User not joined to community";
-        if (communityService.joinCommunity(community_id, user_id)) {
-            res = "User joined to community";
-        }
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        communityService.joinCommunity(community_id, user_id);
+        return new ResponseEntity<>("User joined to community", HttpStatus.OK);
     }
 
     @PatchMapping("/exit/{community_id}/{user_id}")
     public ResponseEntity<String> exitCommunity(@PathVariable Long community_id, @PathVariable Long user_id) {
-        String res = "User not exited from community";
-        if (communityService.exitCommunity(community_id, user_id)) {
-            res = "User exited from community";
-        }
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        communityService.exitCommunity(community_id, user_id);
+        return new ResponseEntity<>("User exited from community", HttpStatus.OK);
     }
 
     @PatchMapping("/{community_id}/{user_id}/{community_newName}")
     public ResponseEntity<String> changeCommunityName(@PathVariable Long community_id, @PathVariable Long user_id,
                                                       @PathVariable String community_newName) {
-        String res = "Community name not changed";
-        if (communityService.changeCommunityName(community_id, user_id, community_newName)) {
-            res = "Community name changed";
-        }
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        communityService.changeCommunityName(community_id, user_id, community_newName);
+        return new ResponseEntity<>("Community name changed", HttpStatus.OK);
     }
 
     @DeleteMapping("/{community_id}/{admin_id}")
     public ResponseEntity<String> deleteCommunity(@PathVariable Long community_id, @PathVariable Long admin_id) {
-        String res = "Community not deleted";
-        if (communityService.deleteCommunity(community_id, admin_id)) {
-            res = "Community deleted";
-        }
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        communityService.deleteCommunity(community_id, admin_id);
+        return new ResponseEntity<>("Community not deleted", HttpStatus.OK);
     }
 }
 

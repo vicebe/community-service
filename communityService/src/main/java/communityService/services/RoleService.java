@@ -6,7 +6,9 @@ import communityService.models.Role;
 import communityService.models.User;
 import communityService.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,17 +37,13 @@ public class RoleService {
     }
 
     public RoleDTO getRole(Long role_id) {
-        Role role = roleRepository.findById(role_id).orElse(null);
+        Role role = roleRepository.findById(role_id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found"));
 
-        RoleDTO roleDTO = null;
 
-        if (!(role == null)) {
-            List<UserDTO> userDTOList = new ArrayList<>();
-            role.getUsers().forEach(u -> userDTOList.add(new UserDTO(u.getUser_id())));
-            roleDTO = new RoleDTO(role.getRole_id(), role.getRole_name(), userDTOList);
-        }
-
-        return roleDTO;
+        List<UserDTO> userDTOList = new ArrayList<>();
+        role.getUsers().forEach(u -> userDTOList.add(new UserDTO(u.getUser_id())));
+        return new RoleDTO(role.getRole_id(), role.getRole_name(), userDTOList);
     }
 
 }
