@@ -3,6 +3,7 @@ package communityService.services;
 import communityService.dtos.CommunityDTO;
 import communityService.dtos.CreateCommunityDTO;
 import communityService.dtos.RoleDTO;
+import communityService.dtos.UserDTO;
 import communityService.models.Community;
 import communityService.models.Role;
 import communityService.models.User;
@@ -60,11 +61,21 @@ public class CommunityService {
             CommunityDTO communityDTO = new CommunityDTO();
             communityDTO.setCommunity_id(community.getCommunity_id());
             communityDTO.setCommunity_name(community.getCommunity_name());
-            communityDTO.setUsers(community.getUsers());
+
+            List<UserDTO> userDTOList = new ArrayList<>();
+            community.getUsers().forEach(u -> userDTOList.add(new UserDTO(u.getUser_id())));
+            communityDTO.setUsers(userDTOList);
 
             List<RoleDTO> roleDTOList = new ArrayList<>();
-            community.getRoles().forEach(r -> roleDTOList.add(new RoleDTO(r.getRole_id(), r.getRole_name(),
-                    r.getUsers())));
+
+            for (Role role : community.getRoles()) {
+                List<UserDTO> userDTOList2 = new ArrayList<>();
+
+                role.getUsers().forEach(u -> userDTOList2.add(new UserDTO(u.getUser_id())));
+
+                RoleDTO roleDTO = new RoleDTO(role.getRole_id(), role.getRole_name(), userDTOList2);
+                roleDTOList.add(roleDTO);
+            }
             communityDTO.setRoles(roleDTOList);
 
             communityDTOS.add(communityDTO);
@@ -81,11 +92,20 @@ public class CommunityService {
             CommunityDTO communityDTO = new CommunityDTO();
             communityDTO.setCommunity_id(community.getCommunity_id());
             communityDTO.setCommunity_name(community.getCommunity_name());
-            communityDTO.setUsers(community.getUsers());
+
+            List<UserDTO> userDTOList = new ArrayList<>();
+            community.getUsers().forEach(u -> userDTOList.add(new UserDTO(u.getUser_id())));
+            communityDTO.setUsers(userDTOList);
 
             List<RoleDTO> roleDTOList = new ArrayList<>();
-            community.getRoles().forEach(r -> roleDTOList.add(new RoleDTO(r.getRole_id(), r.getRole_name(),
-                    r.getUsers())));
+            for (Role role : community.getRoles()) {
+                List<UserDTO> userDTOList2 = new ArrayList<>();
+
+                role.getUsers().forEach(u -> userDTOList2.add(new UserDTO(u.getUser_id())));
+
+                RoleDTO roleDTO = new RoleDTO(role.getRole_id(), role.getRole_name(), userDTOList2);
+                roleDTOList.add(roleDTO);
+            }
             communityDTO.setRoles(roleDTOList);
 
             return communityDTO;

@@ -1,1 +1,3 @@
-si un admin de una comunidad se elimina el usuario, qué debería ocurrir con la comunidad?
+1) si un admin de una comunidad se elimina el usuario, qué debería ocurrir con la comunidad?
+
+2) borrado lógico o físico?

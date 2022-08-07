@@ -1,6 +1,6 @@
 package communityService.controllers;
 
-import communityService.models.User;
+import communityService.dtos.UserDTO;
 import communityService.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,12 +23,21 @@ public class UserController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
     @GetMapping("/{user_id}")
-    public ResponseEntity<User> getUser(@PathVariable Long user_id) {
+    public ResponseEntity<UserDTO> getUser(@PathVariable Long user_id) {
         return new ResponseEntity<>(userService.getUser(user_id), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{user_id}")
+    public ResponseEntity<String> deleteUser(@PathVariable Long user_id) {
+        String res = "User not deleted";
+        if (userService.deleteUser(user_id)) {
+            res = "User deleted";
+        }
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 }
