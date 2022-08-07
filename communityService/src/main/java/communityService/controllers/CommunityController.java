@@ -37,11 +37,20 @@ public class CommunityController {
         return new ResponseEntity<>(communityService.getCommunity(community_id), HttpStatus.OK);
     }
 
-    @PatchMapping("/{community_id}/{user_id}")
+    @PatchMapping("/join/{community_id}/{user_id}")
     public ResponseEntity<String> joinCommunity(@PathVariable Long community_id, @PathVariable Long user_id) {
         String res = "User not joined to community";
         if (communityService.joinCommunity(community_id, user_id)) {
             res = "User joined to community";
+        }
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @PatchMapping("/exit/{community_id}/{user_id}")
+    public ResponseEntity<String> exitCommunity(@PathVariable Long community_id, @PathVariable Long user_id) {
+        String res = "User not exited from community";
+        if (communityService.exitCommunity(community_id, user_id)) {
+            res = "User exited from community";
         }
         return new ResponseEntity<>(res, HttpStatus.OK);
     }

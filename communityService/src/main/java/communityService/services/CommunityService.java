@@ -106,7 +106,6 @@ public class CommunityService {
             if (community.getUsers().stream().noneMatch(u -> u.getUser_id().equals(user_id))) {
                 community.getUsers().add(user);
                 for (Role role: community.getRoles()) {
-                    System.out.println(role.getRole_name());
                     if (role.getRole_name().equals("users")) {
                         role.getUsers().add(user);
                         communityRepository.save(community);
@@ -114,6 +113,28 @@ public class CommunityService {
                     }
                 }
             }
+        }
+        return res;
+    }
+
+    public boolean exitCommunity(Long community_id, Long user_id) {
+        Community community = communityRepository.findById(community_id).orElse(null);
+        User user = userRepository.findById(user_id).orElse(null);
+        boolean res = false;
+
+        if (community != null && user != null) {
+            if (community.getUsers().stream().anyMatch(u -> u.getUser_id().equals(user_id))) {
+                if (community.getRoles().get(0).getUsers().stream().anyMatch(u -> u.getUser_id().equals(user_id))) {
+                    return false;
+                }
+                community.getUsers().remove(user);
+                for (Role role: community.getRoles()) {
+                    role.getUsers().remove(user);
+                }
+                res = true;
+                communityRepository.save(community);
+            }
+
         }
         return res;
     }
