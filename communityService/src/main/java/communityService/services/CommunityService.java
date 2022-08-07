@@ -118,4 +118,23 @@ public class CommunityService {
         return res;
     }
 
+    public boolean changeCommunityName(Long community_id, Long user_id, String community_newName) {
+        Community community = communityRepository.findById(community_id).orElse(null);
+        User user = userRepository.findById(user_id).orElse(null);
+        boolean res = false;
+
+        if (community != null && user != null) {
+            for (Role role: community.getRoles()) {
+                if (role.getRole_name().equals("administrator")) {
+                    if(role.getUsers().stream().anyMatch(u -> u.getUser_id().equals(user.getUser_id()))) {
+                        community.setCommunity_name(community_newName);
+                        communityRepository.save(community);
+                        res = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return res;
+    }
 }

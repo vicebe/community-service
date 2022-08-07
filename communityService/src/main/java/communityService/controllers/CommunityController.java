@@ -45,5 +45,15 @@ public class CommunityController {
         }
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
+
+    @PatchMapping("/{community_id}/{user_id}/{community_newName}")
+    public ResponseEntity<String> changeCommunityName(@PathVariable Long community_id, @PathVariable Long user_id,
+                                                      @PathVariable String community_newName) {
+        String res = "Community name not changed";
+        if (communityService.changeCommunityName(community_id, user_id, community_newName)) {
+            res = "Community name changed";
+        }
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
 }
 
