@@ -97,19 +97,20 @@ public class CommunityService {
 
         Community community = communityRepository.findById(community_id).orElse(null);
 
+        boolean res = false;
+
         if (community != null) {
             for(Role role: community.getRoles()) {
                 if (role.getRole_name().equals("administrator")) {
-                    for (User user: role.getUsers()) {
-                        if (user.getUser_id().equals(admin_id)) {
-                            communityRepository.delete(community);
-                            return true;
-                        }
+                    if (role.getUsers().stream().anyMatch(user -> user.getUser_id().equals(admin_id))) {
+                        communityRepository.delete(community);
+                        res = true;
+                        break;
                     }
                 }
             }
         }
-        return false;
+        return res;
     }
 
 }
