@@ -4,7 +4,6 @@ import communityService.dtos.UserDTO;
 import communityService.models.Community;
 import communityService.models.Role;
 import communityService.models.User;
-import communityService.repositories.CommunityRepository;
 import communityService.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,9 +18,6 @@ public class UserService {
 
     @Autowired
     UserRepository userRepository;
-
-    @Autowired
-    CommunityRepository communityRepository;
 
     public void createUser() {
         User user = new User();
