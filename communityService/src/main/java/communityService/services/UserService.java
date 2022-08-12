@@ -1,6 +1,7 @@
 package communityService.services;
 
 import communityService.dtos.UserDTO;
+import communityService.kafka.KafkaProducer;
 import communityService.models.Community;
 import communityService.models.Role;
 import communityService.models.User;
@@ -8,6 +9,8 @@ import communityService.repositories.CommunityRepository;
 import communityService.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -23,9 +26,16 @@ public class UserService {
     @Autowired
     CommunityRepository communityRepository;
 
+    @Autowired
+    KafkaProducer kafkaProducer;
+
     public void createUser() {
         User user = new User();
         userRepository.save(user);
+
+        kafkaProducer.publishToTopic("user created");
+        kafkaProducer.publishToTopic("message from api :D");
+
     }
 
     public List<UserDTO> getAllUsers() {
